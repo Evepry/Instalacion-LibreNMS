@@ -168,3 +168,7 @@ chown librenms:librenms /opt/librenms/config.php
 sudo su - librenms
 
 ./validate.php
+
+echo "TODO INSTALADO CORRECTAMENTE"
+
+exit
