@@ -67,7 +67,7 @@ systemctl restart mariadb
 
 mysql -u root
 
-Cambiar password a contraseña a utilizar
+Cambiar 'password' a contraseña a utilizar
 
 CREATE DATABASE librenms CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 CREATE USER 'librenms'@'localhost' IDENTIFIED BY 'password';
@@ -95,6 +95,7 @@ Change listen to a unique name:
 listen = /run/php-fpm-librenms.sock
 If there are no other PHP web applications on this server, you may remove www.conf to save some resources. Feel free to tune the performance settings in librenms.conf to meet your needs.
 
+PASO 9
 Configuramos el servidor web NGINX
 
 nano /etc/nginx/conf.d/librenms.conf
@@ -128,51 +129,48 @@ rm /etc/nginx/sites-enabled/default
 systemctl restart nginx
 systemctl restart php8.1-fpm
 
-Otorgamos accesos y configuramos el firewall
+PASO 10
+Completamos los comandos habilitados de lnms
 
 ln -s /opt/librenms/lnms /usr/bin/lnms
 cp /opt/librenms/misc/lnms-completion.bash /etc/bash_completion.d/
 
+PASO 11
 Configuramos el snmpd
 
 cp /opt/librenms/snmpd.conf.example /etc/snmp/snmpd.conf
 
 nano /etc/snmp/snmpd.conf
-Edit the text which says RANDOMSTRINGGOESHERE and set your own community string.
 
+Cambiamos RANDOMSTRINGGOESHERE por el nombre de comunidad
 
 curl -o /usr/bin/distro https://raw.githubusercontent.com/librenms/librenms-agent/master/snmp/distro
 chmod +x /usr/bin/distro
+
 systemctl enable snmpd
 systemctl restart snmpd
-Cron job
+
+PASO12
+Trabajamos Cron
 
 cp /opt/librenms/librenms.nonroot.cron /etc/cron.d/librenms
-NOTE: Keep in mind that cron, by default, only uses a very limited set of environment variables. You may need to configure proxy variables for the cron invocation. Alternatively adding the proxy settings in config.php is possible too. The config.php file will be created in the upcoming steps. Review the following URL after you finished librenms install steps: https://docs.librenms.org//Support/Configuration/#proxy-support
 
-Copy logrotate config
-LibreNMS keeps logs in /opt/librenms/logs. Over time these can become large and be rotated out. To rotate out the old logs you can use the provided logrotate config file:
-
+PASO 13
+Copiamos la configuracion logrotate
 
 cp /opt/librenms/misc/librenms.logrotate /etc/logrotate.d/librenms
-Web installer
-Now head to the web installer and follow the on-screen instructions.
+
+PASO 14
+Instalacion web
+ingresamos a la pagina
 
 http://librenms.example.com/install
 
-The web installer might prompt you to create a config.php file in your librenms install location manually, copying the content displayed on-screen to the file. If you have to do this, please remember to set the permissions on config.php after you copied the on-screen contents to the file. Run:
-
-
 chown librenms:librenms /opt/librenms/config.php
-Final steps
-That's it! You now should be able to log in to http://librenms.example.com/. Please note that we have not covered HTTPS setup in this example, so your LibreNMS install is not secure by default. Please do not expose it to the public Internet unless you have configured HTTPS and taken appropriate web server hardening steps.
 
-Add the first device
-We now suggest that you add localhost as your first device from within the WebUI.
-
-Troubleshooting
-If you ever have issues with your install, run validate.php:
-
+PASO 15
+Solucion de problemas
 
 sudo su - librenms
+
 ./validate.php
